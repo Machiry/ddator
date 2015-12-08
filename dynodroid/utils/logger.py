@@ -1,5 +1,7 @@
 __author__ = 'machiry'
 import threading
+import datetime
+import sys
 
 
 class DDLogger:
@@ -38,6 +40,16 @@ class DDLogger:
         else:
             with self.local_lock:
                 self.log_fd.write(text_to_write + "\n")
+                self.log_fd.flush()
+
+    def end_log(self):
+        """
+        :return:
+        """
+        if self.log_fd is not None:
+            with self.local_lock:
+                self.log_fd.close()
+                self.log_fd = None
 
     def log_info(self, message):
         """
@@ -45,7 +57,7 @@ class DDLogger:
         :param message:
         :return:
         """
-        self._write('[*] ' + self.target_class_name + ': ' + message)
+        self._write('[*] ' + self.target_class_name + ' ' + str(datetime.datetime.now()) + ' ' + ': ' + message)
 
     def log_success(self, message):
         """
@@ -53,7 +65,7 @@ class DDLogger:
         :param message:
         :return:
         """
-        self._write('[+] ' + self.target_class_name + ': ' + message)
+        self._write('[+] ' + self.target_class_name + ' ' + str(datetime.datetime.now()) + ' ' + ': ' + message)
 
     def log_failure(self, message):
         """
@@ -61,9 +73,10 @@ class DDLogger:
         :param message:
         :return:
         """
-        self._write('[-] ' + self.target_class_name + ': ' + message)
+        self._write('[-] ' + self.target_class_name + ' ' + str(datetime.datetime.now()) + ' ' + ': ' + message)
         if self.exit_on_failure:
-            self._write('[#] ' + self.target_class_name + ': Exiting From Logger as Error Occured!')
+            self._write('[#] ' + self.target_class_name + ' ' + str(datetime.datetime.now()) + ' ' +
+                        ': Exiting From Logger as Error Occured!')
             sys.exit(-1)
 
     def log_warning(self, message):
@@ -72,4 +85,4 @@ class DDLogger:
         :param message:
         :return:
         """
-        self._write('[!] ' + self.target_class_name + ': ' + message)
+        self._write('[!] ' + self.target_class_name + ' ' + str(datetime.datetime.now()) + ' ' + ': ' + message)
