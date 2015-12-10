@@ -1,5 +1,5 @@
 __author__ = 'machiry'
-from ..utils.common_utils import create_dirs
+from dynodroid.utils.common_utils import create_dirs
 
 """
 

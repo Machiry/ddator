@@ -1,7 +1,7 @@
 __author__ = 'machiry'
 
 
-class AppConfig:
+class AppHandler:
 
     def build_app(self):
         raise NotImplementedError("Build App not overridden.")

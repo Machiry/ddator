@@ -14,6 +14,7 @@ PROPERTIES_DICT = \
         "avd_store": "Path where created emulators need to be stored.",
         "event_count": "Number of events that need to be used for testing.",
         "apktool_loc": "Absolute path of apktool.jar.",
+        "device_ids": "Comma separated list of device ids that should be used for testing",
         "max_emu": "Maximum number of emulators that could be used for testing.",
         "complete_notify": "Email id to which a message need to be sent when complete running is done.",
         "report_email_user": "Email id(gmail) which should be used as source to send email.",
