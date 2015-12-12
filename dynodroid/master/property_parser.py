@@ -2,23 +2,39 @@ __author__ = 'machiry'
 from ..utils.common_utils import read_file_lines
 from ..utils.logger import DDLogger
 
+WORK_DIR_PROPERTY_NAME = "work_dir"
+SDK_INSTALL_PROPERTY_NAME = "sdk_install"
+APP_DIR_PROPERTY_NAME = "app_dir"
+TEST_STRATEGY_PROPERTY_NAME = "test_strategy"
+SEL_STRATEGY_PROPERTY_NAME = "sel_strategy"
+MAX_WIDGETS_PROPERTY_NAME = "max_widgets"
+COV_SAMPLE_PROPERTY_NAME = "cov_sample"
+AVD_STORE_PROPERTY_NAME = "avd_store"
+EVENT_COUNT_PROPERTY_NAME = "event_count"
+APK_TOOL_LOC_PROPERTY_NAME = "apktool_loc"
+DEVICE_ID_PROPERTY_NAME = "device_ids"
+MAX_EMU_PROPERTY_NAME = "max_emu"
+COMPLETE_NOTIFY_PROPERTY_NAME = "complete_notify"
+REPORT_EMAIL_USER_PROPERTY_NAME = "report_email_user"
+REPORT_EMAIL_PASS_PROPERTY_NAME = "report_email_pass"
+
 PROPERTIES_DICT = \
-    {"work_dir": "Directory where all logs, stats and other output from Dynodroid will be saved.",
-        "sdk_install": "Directory where Android SDK is expected to present.",
-        "app_dir": "Directory where all apps that need to be tested are present.",
-        "test_strategy": "Comma separated list of test strategies that need to be used.",
-        "sel_strategy": "Comma separated list of widget selection strategies that need to "
-                         "be used (applicable only if test_strategy = WidgetBasedTesting",
-        "max_widgets": "Maximum number of widgets that need to be exercised.",
-        "cov_sample": "Number of events after which coverage need to be collected.",
-        "avd_store": "Path where created emulators need to be stored.",
-        "event_count": "Number of events that need to be used for testing.",
-        "apktool_loc": "Absolute path of apktool.jar.",
-        "device_ids": "Comma separated list of device ids that should be used for testing",
-        "max_emu": "Maximum number of emulators that could be used for testing.",
-        "complete_notify": "Email id to which a message need to be sent when complete running is done.",
-        "report_email_user": "Email id(gmail) which should be used as source to send email.",
-        "report_email_pass": "Password of the report email id."}
+    {WORK_DIR_PROPERTY_NAME: "Directory where all logs, stats and other output from Dynodroid will be saved.",
+        SDK_INSTALL_PROPERTY_NAME: "Directory where Android SDK is expected to present.",
+        APP_DIR_PROPERTY_NAME: "Directory where all apps that need to be tested are present.",
+        TEST_STRATEGY_PROPERTY_NAME: "Comma separated list of test strategies that need to be used.",
+        SEL_STRATEGY_PROPERTY_NAME: "Comma separated list of widget selection strategies that need to "
+                                    "be used (applicable only if test_strategy = WidgetBasedTesting",
+        MAX_WIDGETS_PROPERTY_NAME: "Maximum number of widgets that need to be exercised.",
+        COV_SAMPLE_PROPERTY_NAME: "Number of events after which coverage need to be collected.",
+        AVD_STORE_PROPERTY_NAME: "Path where created emulators need to be stored.",
+        EVENT_COUNT_PROPERTY_NAME: "Number of events that need to be used for testing.",
+        APK_TOOL_LOC_PROPERTY_NAME: "Absolute path of apktool.jar.",
+        DEVICE_ID_PROPERTY_NAME: "Comma separated list of device ids that should be used for testing",
+        MAX_EMU_PROPERTY_NAME: "Maximum number of emulators that could be used for testing.",
+        COMPLETE_NOTIFY_PROPERTY_NAME: "Email id to which a message need to be sent when complete running is done.",
+        REPORT_EMAIL_USER_PROPERTY_NAME: "Email id(gmail) which should be used as source to send email.",
+        REPORT_EMAIL_PASS_PROPERTY_NAME: "Password of the report email id."}
 
 parsed_properties = dict()
 
@@ -33,6 +49,11 @@ def get_properties():
 
 
 def parse_properties_file(property_file):
+    """
+
+    :param property_file:
+    :return:
+    """
     if len(parsed_properties) == 0:
         file_lines = read_file_lines(property_file)
         for curr_line in file_lines:
