@@ -8,6 +8,7 @@ class WidgetBasedTesting(TestStrategy):
 
     def __init__(self):
         self.selection_strategy = None
+        self.target_device = None
         pass
 
     @staticmethod
@@ -23,7 +24,8 @@ class WidgetBasedTesting(TestStrategy):
             pass
         return to_return_strategies
 
-    def setup(self):
+    def setup(self, target_device):
+        assert target_device is not None, "Device provided should not be None"
         raise NotImplementedError("setup not overridden.")
 
     def get_name(self):

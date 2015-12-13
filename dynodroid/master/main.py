@@ -8,6 +8,9 @@ from ..app_handlers.app_src_handler import AppSrcHandler
 from ..utils.logger import DDLogger
 from test_profile import TestProfile
 from ..test_harness.test_strategy import get_test_strategies
+from ..device_handlers.device_manager import get_available_devices, get_free_device
+from multiprocessing.pool import ThreadPool
+import time
 import os
 
 
@@ -73,6 +76,18 @@ def get_all_profiles(properties_dict, target_log):
         return target_test_profiles
 
 
+def run_test_profile(curr_test_profile, curr_log):
+    target_device = get_free_device()
+    while target_device is None:
+        curr_log.log_info("Sleeping for test profile:" + str(curr_test_profile))
+        time.sleep(5)
+        target_device = get_free_device()
+    curr_log.log_info("Got Device:" + str(target_device) + " For test profile:" + str(curr_test_profile))
+    curr_test_profile.set_device(target_device)
+    curr_log.log_info("Running Test Profile:" + str(curr_test_profile))
+    curr_test_profile.run_profile()
+
+
 def main():
     # 1. Check args
     if len(sys.argv) < 2:
@@ -90,7 +105,20 @@ def main():
     # 3. Get various test profiles.
     all_test_profiles = get_all_profiles(current_properties, main_log)
     main_log.log_info("Got " + len(all_test_profiles) + " To Execute.")
+
     # 4. Execute each test profile.
+    no_of_available_devices = get_available_devices()
+    if no_of_available_devices <= 0:
+        main_log.log_info("No Devices available to test.")
+        return -3
+    main_log.log_info("Identified " + str(no_of_available_devices) + " available devices.")
+    all_test_profiles = map(lambda x: (x, main_log), all_test_profiles)
+    main_log.log_info("Running all test profiles.")
+    curr_pool = ThreadPool(processes=no_of_available_devices)
+    curr_pool.map(run_test_profile, all_test_profiles)
+    main_log.log_info("Scheduled all test profiles.")
+    curr_pool.join()
+    main_log.log_info("All Test Profiles Completed Execution.")
 
 
 if __name__ == "__main__":

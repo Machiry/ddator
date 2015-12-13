@@ -24,7 +24,16 @@ class TestProfile:
         self.number_of_events = number_of_events
         self.strategy_prams = strategy_params
         self.log_folder = log_folder
+        self.target_device = None
         create_dirs(log_folder)
+
+    def set_device(self, target_device):
+        assert target_device is not None, "Device to test on cannot be None."
+        self.target_device = target_device
+
+    def run_profile(self):
+        # TODO code to execute tests.
+        pass
 
     @staticmethod
     def _validate_params(target_app_config, test_strategy, number_of_events, strategy_params, log_folder):

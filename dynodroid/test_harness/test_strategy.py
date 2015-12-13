@@ -15,7 +15,7 @@ def get_test_strategies(strategy_name, strategy_params):
 
 class TestStrategy:
 
-    def setup(self):
+    def setup(self, target_device):
         raise NotImplementedError("setup not overridden.")
 
     def get_name(self):
