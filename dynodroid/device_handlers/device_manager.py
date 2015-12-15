@@ -13,6 +13,28 @@ _free_devices = None
 _busy_devices = None
 
 
+def get_adb_devices():
+    """
+
+    :return:
+    """
+    to_ret = []
+    get_device_args = ['adb', 'devices']
+    (ret_code, output_lines, err_lines) = run_command(get_device_args)
+    if ret_code != 0:
+        DDLogger.write_failure_message("Running adb devices failed with return code:" + str(ret_code))
+    dev_start = False
+    for curr_line in output_lines:
+        if dev_start:
+            dev_info = filter(lambda x: x.strip(), curr_line.split())
+            device_name = dev_info[0]
+            to_ret.append(device_name)
+        else:
+            dev_start = curr_line.startswith('List of devices attached')
+
+    return to_ret
+
+
 def get_available_devices():
     """
 
@@ -23,27 +45,18 @@ def get_available_devices():
     global _busy_devices
     ret_val = 0
     if _available_devices is None:
-        _available_devices = {}
-        _free_devices = {}
-        _busy_devices = {}
-        get_device_args = ['adb', 'devices']
-        (ret_code, output_lines, err_lines) = run_command(get_device_args)
-        if ret_code != 0:
-            DDLogger.write_failure_message("Running adb devices failed with return code:" + str(ret_code))
-        dev_start = False
-        for curr_line in output_lines:
-            if dev_start:
-                dev_info = filter(lambda x: x.strip(), curr_line.split())
-                device_name = dev_info[0]
+        with _devices_lock:
+            _available_devices = {}
+            _free_devices = {}
+            _busy_devices = {}
+            for device_name in get_adb_devices():
                 if device_name.startswith('emulator'):
                     dev_handler = EmulatorHandler(device_name)
                 else:
                     dev_handler = RealDeviceHandler(device_name)
                 _available_devices.append(dev_handler)
                 _free_devices.append(dev_handler)
-            else:
-                dev_start = curr_line.startswith('List of devices attached')
-        ret_val = len(_available_devices)
+    ret_val = len(_available_devices)
     return ret_val
 
 

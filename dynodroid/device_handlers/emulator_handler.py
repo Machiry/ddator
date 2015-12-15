@@ -15,11 +15,19 @@ class EmulatorHandler(DeviceHandler):
                                                str(self.target_device_id)
 
     def reset_device(self):
-        # TODO: implement this.
-        raise NotImplementedError("Yet to implement.")
+        """
+
+        :return:
+        """
+        to_ret = self.restart_device()
+        self.uiauto_object = Device(self.target_device_id)
+        return to_ret and self.uiauto_object is not None
 
     def get_ui_handle(self):
         return self.uiauto_object
+
+    def get_name(self):
+        return "EMULATOR_" + str(self.target_device_id)
 
     def run_command(self, args):
         # TODO: implement this.

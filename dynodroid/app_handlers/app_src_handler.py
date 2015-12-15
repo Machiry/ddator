@@ -22,3 +22,9 @@ class AppSrcHandler(AppHandler):
     def build_app(self):
         # TODO: build the app with sources
         return True
+
+    def install_app(self, device_handler):
+        raise NotImplementedError("Install App not overridden")
+
+    def get_name(self):
+        return "APPSRC_" + str(self.app_full_path)

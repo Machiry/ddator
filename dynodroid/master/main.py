@@ -29,7 +29,7 @@ def get_all_profiles(properties_dict, target_log):
         apps_with_src = []
         apks = []
         for curr_file in os.listdir(apps_dir):
-            full_path = os.pah.join(apps_dir, curr_file)
+            full_path = os.path.join(apps_dir, curr_file)
             if os.path.isfile(full_path):
                 if full_path.endswith(".apk"):
                     apks.append(full_path)

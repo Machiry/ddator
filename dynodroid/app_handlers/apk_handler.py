@@ -22,3 +22,14 @@ class ApkHandler(AppHandler):
     def build_app(self):
         # Nothing to do for APK.
         return True
+
+    def install_app(self, device_handler):
+        """
+
+        :param device_handler:
+        :return:
+        """
+        return AppHandler.install_apk(self.apk_full_path, device_handler)
+
+    def get_name(self):
+        return "APK_" + str(self.apk_full_path)
