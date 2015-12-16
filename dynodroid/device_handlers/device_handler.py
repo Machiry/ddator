@@ -1,5 +1,5 @@
 from ..utils.common_utils import run_command
-from device_manager import get_adb_devices
+from devices_helper import get_adb_devices
 from ..utils.logger import DDLogger
 import time
 

@@ -34,13 +34,11 @@ class DDLogger:
         :param text_to_write:
         :return:
         """
-        if self.log_fd is None:
-            with DDLogger.__stdout_lock:
+        with DDLogger.__stdout_lock:
                 print(text_to_write)
-        else:
-            with self.local_lock:
-                self.log_fd.write(text_to_write + "\n")
-                self.log_fd.flush()
+        with self.local_lock:
+            self.log_fd.write(text_to_write + "\n")
+            self.log_fd.flush()
 
     def end_log(self):
         """

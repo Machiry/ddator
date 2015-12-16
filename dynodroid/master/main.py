@@ -7,15 +7,15 @@ from ..app_handlers.apk_handler import ApkHandler
 from ..app_handlers.app_src_handler import AppSrcHandler
 from ..utils.logger import DDLogger
 from test_profile import TestProfile
-from ..test_harness.test_strategy import get_test_strategies
-from ..device_handlers.device_manager import get_available_devices, get_free_device
+from ..test_harness.strategy_generator import get_test_strategies
+from ..device_handlers.device_manager import get_available_devices, get_free_device, put_free_device
 from multiprocessing.pool import ThreadPool
 import time
 import os
 
 
 def print_usage():
-    print(sys.arv[0] + " <property_file>")
+    print(sys.argv[0] + " <property_file>")
 
 
 def get_all_profiles(properties_dict, target_log):
@@ -54,7 +54,7 @@ def get_all_profiles(properties_dict, target_log):
                     all_strategy_objs = get_test_strategies(curr_strategy, all_selection_strategies)
                     for curr_strategy_obj in all_strategy_objs:
                         curr_app_work_dir = os.path.join(base_work_dir, os.path.basename(curr_apk) + '_' +
-                                                         str(curr_event_num) + '_' + curr_strategy_obj)
+                                                         str(curr_event_num) + '_' + str(curr_strategy_obj))
                         curr_app_handler = ApkHandler(curr_apk, curr_app_work_dir)
                         curr_app_test_profile = TestProfile(curr_app_handler, curr_strategy_obj, int(curr_event_num),
                                                             {}, curr_app_work_dir)
@@ -67,7 +67,7 @@ def get_all_profiles(properties_dict, target_log):
                     all_strategy_objs = get_test_strategies(curr_strategy, all_selection_strategies)
                     for curr_strategy_obj in all_strategy_objs:
                         curr_app_work_dir = os.path.join(base_work_dir, os.path.basename(curr_app_src) + '_' +
-                                                         str(curr_event_num) + '_' + curr_strategy_obj)
+                                                         str(curr_event_num) + '_' + str(curr_strategy_obj))
                         curr_app_handler = AppSrcHandler(curr_app_src, curr_app_work_dir)
                         curr_app_test_profile = TestProfile(curr_app_handler, curr_strategy_obj, int(curr_event_num),
                                                             {}, curr_app_work_dir)
@@ -76,7 +76,9 @@ def get_all_profiles(properties_dict, target_log):
         return target_test_profiles
 
 
-def run_test_profile(curr_test_profile, curr_log):
+def run_test_profile(curr_pair):
+    curr_test_profile = curr_pair[0]
+    curr_log = curr_pair[1]
     target_device = get_free_device()
     while target_device is None:
         curr_log.log_info("Sleeping for test profile:" + str(curr_test_profile))
@@ -86,9 +88,10 @@ def run_test_profile(curr_test_profile, curr_log):
     curr_test_profile.set_device(target_device)
     curr_log.log_info("Running Test Profile:" + str(curr_test_profile))
     curr_test_profile.run_profile()
+    put_free_device(target_device)
 
 
-def main():
+def master():
     # 1. Check args
     if len(sys.argv) < 2:
         print_usage()
@@ -104,7 +107,7 @@ def main():
     main_log.log_info("Got all properties.")
     # 3. Get various test profiles.
     all_test_profiles = get_all_profiles(current_properties, main_log)
-    main_log.log_info("Got " + len(all_test_profiles) + " To Execute.")
+    main_log.log_info("Got " + str(len(all_test_profiles)) + " To Execute.")
 
     # 4. Execute each test profile.
     no_of_available_devices = get_available_devices()
@@ -117,9 +120,4 @@ def main():
     curr_pool = ThreadPool(processes=no_of_available_devices)
     curr_pool.map(run_test_profile, all_test_profiles)
     main_log.log_info("Scheduled all test profiles.")
-    curr_pool.join()
     main_log.log_info("All Test Profiles Completed Execution.")
-
-
-if __name__ == "__main__":
-    sys.exit(main())

@@ -3,6 +3,7 @@ from app_handler import AppHandler
 from ..utils.logger import DDLogger
 from ..utils.apk_utils import decompress_apk
 from ..utils.manifest_handler import parse_apk_manifest
+from ..utils.common_utils import create_dirs
 import os
 
 
@@ -11,9 +12,7 @@ class ApkHandler(AppHandler):
     def __init__(self, apk_full_path, target_log_dir):
         self.target_log_dir = target_log_dir
         if not os.path.exists(target_log_dir):
-            self.target_log_dir = os.getcwd()
-            DDLogger.write_failure_message("Directory provided for log is empty, using current directory:" +
-                                           str(self.target_log_dir))
+            create_dirs(self.target_log_dir)
         assert os.path.exists(apk_full_path), "Provided APK:" + str(apk_full_path) + " does not exist."
         self.extracted_apk_dir = os.path.join(self.target_log_dir, "extracted_apk_dir")
         self.apk_full_path = apk_full_path

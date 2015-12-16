@@ -2,6 +2,8 @@ __author__ = 'machiry'
 from ..test_harness.test_strategy import TestStrategy
 from ..utils.common_utils import create_dirs
 from ..utils.logger import DDLogger
+from ..device_events.StartAppEvent import StartAppEvent
+import IPython
 import os
 
 
@@ -16,7 +18,6 @@ class WidgetBasedTesting(TestStrategy):
         self.target_app_handler = None
         self.setup_complete = None
         self.log = None
-        pass
 
     @staticmethod
     def create_test_strategies(selection_strategies_name):
@@ -25,11 +26,13 @@ class WidgetBasedTesting(TestStrategy):
         :param selection_strategies_name:
         :return:
         """
-        to_return_strategies = []
+        return [WidgetBasedTesting()]
+
+        """to_return_strategies = []
         for curr_sel_strategy in selection_strategies_name:
             # TODO: Create a TestingObject based on selection strategy.
             pass
-        return to_return_strategies
+        return to_return_strategies"""
 
     def setup(self, target_device, log_folder, target_app_handler):
         setup_success = False
@@ -41,10 +44,10 @@ class WidgetBasedTesting(TestStrategy):
         create_dirs(log_folder)
         self.log = DDLogger(self.__class__.__name__, target_log_file=os.path.join(log_folder, self.get_name() + ".log"))
         self.log.log_info("Starting to Reset Device:" + str(self.target_device))
-        if self.target_device.reset_device():
+        """if self.target_device.reset_device():
             self.log.log_info("Resetting Device Successful:" + str(self.target_device))
         else:
-            self.log.log_failure("Failed to Reset Device:" + str(self.target_device))
+            self.log.log_failure("Failed to Reset Device:" + str(self.target_device))"""
         if self.target_app_handler.build_app():
             self.log.log_info("Successfully Built Application:" + str(self.target_app_handler))
         else:
@@ -61,7 +64,8 @@ class WidgetBasedTesting(TestStrategy):
         return self.setup_complete
 
     def get_name(self):
-        return WidgetBasedTesting.STRATEGY_NAME + '_' + self.selection_strategy.get_name()
+        # TODO: Fix this
+        return WidgetBasedTesting.STRATEGY_NAME + '_' # + self.selection_strategy.get_name()
 
     def run_tests(self):
         to_ret = False
@@ -72,7 +76,17 @@ class WidgetBasedTesting(TestStrategy):
         else:
             to_ret = True
             self.log.log_info("Starting to Run Tests.")
+            start_app = StartAppEvent(self.target_app_handler.manifest_info['package_name'],
+                                      self.target_app_handler.manifest_info['main_activity'])
+            if start_app.trigger_event(self.target_device, self.log):
+                self.log.log_info("Started App:" + str(self.target_app_handler) + " successfully")
+
         return to_ret
 
     def cleanup(self):
-        raise NotImplementedError("Clean up not overridden.")
+        to_ret = self.target_app_handler.uninstall_app(self.target_device)
+        if to_ret:
+            self.log.log_info("Uninstalled App:" + str(self.target_app_handler) + " Successfully.")
+        else:
+            self.log.log_failure("Failed to uninstall App:" + str(self.target_app_handler))
+        return to_ret

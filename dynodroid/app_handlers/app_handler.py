@@ -1,7 +1,8 @@
 __author__ = 'machiry'
 from ..utils.common_utils import run_command
 
-class AppHandler:
+
+class AppHandler(object):
 
     def get_name(self):
         return "InvalidAppHandler"
@@ -26,6 +27,11 @@ class AppHandler:
 
     def install_app(self, device_handler):
         raise NotImplementedError("Install App not overridden")
+
+    def uninstall_app(self, target_device_handler):
+        target_args = ['adb', '-s', target_device_handler.target_device_id, 'uninstall', self.get_app_name()]
+        ret_code, _, _ = run_command(target_args)
+        return ret_code == 0
 
     def __str__(self):
         return self.get_name()

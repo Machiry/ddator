@@ -9,11 +9,8 @@ TEST_STRATEGY_PROPERTY_NAME = "test_strategy"
 SEL_STRATEGY_PROPERTY_NAME = "sel_strategy"
 MAX_WIDGETS_PROPERTY_NAME = "max_widgets"
 COV_SAMPLE_PROPERTY_NAME = "cov_sample"
-AVD_STORE_PROPERTY_NAME = "avd_store"
 EVENT_COUNT_PROPERTY_NAME = "event_count"
-APK_TOOL_LOC_PROPERTY_NAME = "apktool_loc"
 DEVICE_ID_PROPERTY_NAME = "device_ids"
-MAX_EMU_PROPERTY_NAME = "max_emu"
 COMPLETE_NOTIFY_PROPERTY_NAME = "complete_notify"
 REPORT_EMAIL_USER_PROPERTY_NAME = "report_email_user"
 REPORT_EMAIL_PASS_PROPERTY_NAME = "report_email_pass"
@@ -27,11 +24,8 @@ PROPERTIES_DICT = \
                                     "be used (applicable only if test_strategy = WidgetBasedTesting",
         MAX_WIDGETS_PROPERTY_NAME: "Maximum number of widgets that need to be exercised.",
         COV_SAMPLE_PROPERTY_NAME: "Number of events after which coverage need to be collected.",
-        AVD_STORE_PROPERTY_NAME: "Path where created emulators need to be stored.",
         EVENT_COUNT_PROPERTY_NAME: "Number of events that need to be used for testing.",
-        APK_TOOL_LOC_PROPERTY_NAME: "Absolute path of apktool.jar.",
         DEVICE_ID_PROPERTY_NAME: "Comma separated list of device ids that should be used for testing",
-        MAX_EMU_PROPERTY_NAME: "Maximum number of emulators that could be used for testing.",
         COMPLETE_NOTIFY_PROPERTY_NAME: "Email id to which a message need to be sent when complete running is done.",
         REPORT_EMAIL_USER_PROPERTY_NAME: "Email id(gmail) which should be used as source to send email.",
         REPORT_EMAIL_PASS_PROPERTY_NAME: "Password of the report email id."}

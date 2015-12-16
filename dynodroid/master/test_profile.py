@@ -36,7 +36,8 @@ class TestProfile:
     def run_profile(self):
         assert self.target_device is not None, "First set the device"
         self.log.log_info("Starting to run test on Device:" + str(self.target_device))
-        if self.test_strategy.setup(self.target_device):
+        if self.test_strategy.setup(self.target_device, os.path.join(self.log_folder, "test_strategy_log"),
+                                    self.target_app_handler):
             self.log.log_info("Test Strategy:" + str(self.test_strategy) + " Setup Complete.")
             if self.test_strategy.run_tests():
                 self.log.log_info("Successfully Completed Running Tests.")
@@ -65,3 +66,8 @@ class TestProfile:
         assert number_of_events is not None, "Number of events cannot be None"
         assert strategy_params is not None, "Strategy parameters cannot be None"
         assert log_folder is not None, "Log folder cannot be None"
+
+    def __str__(self):
+        to_ret = "TestProfile_" + str(self.test_strategy) + "_" + \
+                 ("" if self.target_device is None else str(self.target_device))
+        return to_ret
