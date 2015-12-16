@@ -26,5 +26,8 @@ class AppSrcHandler(AppHandler):
     def install_app(self, device_handler):
         raise NotImplementedError("Install App not overridden")
 
+    def get_app_name(self):
+        raise NotImplementedError("get app name Not implemented.")
+
     def get_name(self):
         return "APPSRC_" + str(self.app_full_path)

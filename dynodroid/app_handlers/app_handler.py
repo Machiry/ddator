@@ -9,6 +9,9 @@ class AppHandler:
     def build_app(self):
         raise NotImplementedError("Build App not overridden.")
 
+    def get_app_name(self):
+        raise NotImplementedError("get app name Not implemented.")
+
     @staticmethod
     def install_apk(apk_name, target_device_handler):
         """
