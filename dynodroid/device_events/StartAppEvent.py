@@ -1,4 +1,5 @@
 from system_event import SystemEvent
+from ..utils.ui_helper import get_current_package
 
 
 class StartAppEvent(SystemEvent):
@@ -20,9 +21,7 @@ class StartAppEvent(SystemEvent):
         target_device.get_ui_handle().wakeup()
         starting_success = super(StartAppEvent, self).trigger_event(target_device, target_logger)
         if starting_success:
-            curr_info = target_device.get_ui_handle().info
-            if (curr_info is not None) and ('currentPackageName' in curr_info):
-                starting_success = (curr_info['currentPackageName'] == self.app_pkg_name)
+            starting_success = (get_current_package(target_device) == self.app_pkg_name)
         return starting_success
 
 

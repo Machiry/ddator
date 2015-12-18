@@ -1,6 +1,7 @@
 __author__ = 'machiry'
 import os
 import subprocess
+import xml.dom.minidom
 
 
 def create_dirs(dir_path):
@@ -46,3 +47,18 @@ def run_command(args, cmd_input=None):
         ret_code = p.wait()
 
     return ret_code, output_lines, err_lines
+
+
+def _get_all_leafs(curr_element):
+    if len(curr_element.childNodes) == 0:
+        return [curr_element]
+    to_ret = []
+    for curr_child in curr_element.childNodes:
+        to_ret.extend(_get_all_leafs(curr_child))
+    return to_ret
+
+
+def get_all_leaf_elements(xml_text):
+    root_element = xml.dom.minidom.parseString(xml_text)
+    return _get_all_leafs(root_element)
+
