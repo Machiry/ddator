@@ -26,5 +26,9 @@ class RandomSelection(SelectionStrategy):
     def update_triggered_widget(self, target_widget):
         pass
 
+    @staticmethod
+    def get_selection_name():
+        return "RandomBased"
+
     def get_name(self):
-        return "RandomSelection"
+        return RandomSelection.get_selection_name()

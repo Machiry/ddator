@@ -2,7 +2,7 @@ from selection_strategy import SelectionStrategy
 import random
 
 
-class RandomBiasSelection(SelectionStrategy):
+class FrequencyBasedSelection(SelectionStrategy):
 
     def __init__(self):
         self.current_available_widget_frequency = {}
@@ -40,5 +40,9 @@ class RandomBiasSelection(SelectionStrategy):
     def update_triggered_widget(self, target_widget):
         pass
 
+    @staticmethod
+    def get_selection_name():
+        return "FrequencyBased"
+
     def get_name(self):
-        return "RandomBiasSelection"
+        return FrequencyBasedSelection.get_selection_name()

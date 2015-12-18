@@ -3,7 +3,9 @@ from ..test_harness.test_strategy import TestStrategy
 from ..utils.common_utils import create_dirs
 from ..utils.logger import DDLogger
 from ..device_events.StartAppEvent import StartAppEvent
-import IPython
+from frequency_based_selection import FrequencyBasedSelection
+from random_bias_selection import RandomBiasSelection
+from random_selection import RandomSelection
 import os
 
 
@@ -26,13 +28,24 @@ class WidgetBasedTesting(TestStrategy):
         :param selection_strategies_name:
         :return:
         """
-        return [WidgetBasedTesting()]
 
-        """to_return_strategies = []
+        to_return_strategies = []
         for curr_sel_strategy in selection_strategies_name:
-            # TODO: Create a TestingObject based on selection strategy.
-            pass
-        return to_return_strategies"""
+            target_obj = None
+            if curr_sel_strategy == RandomSelection.get_selection_name():
+                target_obj = RandomSelection()
+            if curr_sel_strategy == RandomBiasSelection.get_selection_name():
+                target_obj = RandomBiasSelection()
+            if curr_sel_strategy == FrequencyBasedSelection.get_selection_name():
+                target_obj = FrequencyBasedSelection()
+            if target_obj is not None:
+                widget_testing = WidgetBasedTesting()
+                widget_testing.selection_strategy = target_obj
+                to_return_strategies.append(widget_testing)
+            else:
+                DDLogger.write_failure_message("Invalid Selection strategy name provided:" +
+                                               str(curr_sel_strategy))
+        return to_return_strategies
 
     def setup(self, target_device, log_folder, target_app_handler):
         setup_success = False
