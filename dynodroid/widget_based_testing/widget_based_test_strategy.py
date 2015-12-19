@@ -2,7 +2,8 @@ __author__ = 'machiry'
 from ..test_harness.test_strategy import TestStrategy
 from ..utils.common_utils import create_dirs
 from ..utils.logger import DDLogger
-from ..device_events.StartAppEvent import StartAppEvent
+from ..utils.ui_helper import get_current_screen
+from ..device_events.startapp_event import StartAppEvent
 from frequency_based_selection import FrequencyBasedSelection
 from random_bias_selection import RandomBiasSelection
 from random_selection import RandomSelection
@@ -19,6 +20,7 @@ class WidgetBasedTesting(TestStrategy):
         self.log_folder = None
         self.target_app_handler = None
         self.setup_complete = None
+        self.number_of_events = None
         self.log = None
 
     @staticmethod
@@ -47,11 +49,13 @@ class WidgetBasedTesting(TestStrategy):
                                                str(curr_sel_strategy))
         return to_return_strategies
 
-    def setup(self, target_device, log_folder, target_app_handler):
+    def setup(self, target_device, log_folder, target_app_handler, number_of_events):
         setup_success = False
         assert target_device is not None, "Device provided should not be None"
         assert log_folder is not None, "log folder should not be None"
         assert target_app_handler is not None, "App handler should not be None"
+        assert number_of_events > 0, "Number of events should be greater than 0"
+        self.number_of_events = number_of_events
         self.target_device = target_device
         self.target_app_handler = target_app_handler
         create_dirs(log_folder)
@@ -78,7 +82,8 @@ class WidgetBasedTesting(TestStrategy):
 
     def get_name(self):
         # TODO: Fix this
-        return WidgetBasedTesting.STRATEGY_NAME + '_' # + self.selection_strategy.get_name()
+        return WidgetBasedTesting.STRATEGY_NAME + '_' + \
+               (self.selection_strategy.get_name() if self.selection_strategy is not None else "")
 
     def run_tests(self):
         to_ret = False
@@ -87,12 +92,21 @@ class WidgetBasedTesting(TestStrategy):
         elif not self.setup_complete:
             self.log.log_failure("Setup failed, Not Running Tests.")
         else:
-            to_ret = True
+            to_ret = False
             self.log.log_info("Starting to Run Tests.")
             start_app = StartAppEvent(self.target_app_handler.manifest_info['package_name'],
                                       self.target_app_handler.manifest_info['main_activity'])
             if start_app.trigger_event(self.target_device, self.log):
+                to_ret = True
                 self.log.log_info("Started App:" + str(self.target_app_handler) + " successfully")
+                old_screen = get_current_screen(self.target_device)
+                self.selection_strategy.update_new_screen(old_screen)
+                curr_event_number = 0
+                while curr_event_number < self.number_of_events:
+                    target_widget = self.selection_strategy.get_next_widget()
+
+            else:
+                self.log.log_failure("Failed to Start App:" + str(self.target_app_handler))
 
         return to_ret
 

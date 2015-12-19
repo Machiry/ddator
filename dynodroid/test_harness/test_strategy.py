@@ -2,7 +2,7 @@ __author__ = 'machiry'
 
 class TestStrategy:
 
-    def setup(self, target_device, log_folder, target_app_handler):
+    def setup(self, target_device, log_folder, target_app_handler, number_of_events):
         raise NotImplementedError("setup not overridden.")
 
     def get_name(self):

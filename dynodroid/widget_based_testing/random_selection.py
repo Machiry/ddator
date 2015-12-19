@@ -15,7 +15,7 @@ class RandomSelection(SelectionStrategy):
         return to_ret
 
     def update_new_screen(self, new_screen):
-        self.current_available_widgets = new_screen.child_widgets
+        self.current_available_widgets = list(new_screen.child_widgets)
 
     def update_system_events(self, target_events):
         self.current_system_events.extend(target_events)
