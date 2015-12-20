@@ -19,7 +19,7 @@ class Widget(object):
         self.parent_screen.add_child(self)
 
     def get_ui_object(self, target_device):
-        target_device.get_ui_handle().wakeup()
+        target_device.get_ui_handle().screen.on()
         return self.target_ui_obj
 
     def __hash__(self):

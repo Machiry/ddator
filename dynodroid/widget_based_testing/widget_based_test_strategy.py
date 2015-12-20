@@ -108,13 +108,13 @@ class WidgetBasedTesting(TestStrategy):
                 while curr_event_number < self.number_of_events:
                     target_widget = self.selection_strategy.get_next_widget()
                     if target_widget is None:
-
                         self.log.log_warning("No widgets to click on the Application")
                         break
                     possible_events = get_all_possible_ui_events(target_widget)
                     if len(possible_events) > 0:
                         target_event = random.choice(possible_events)
                         if target_event and target_event.trigger_event(self.target_device, self.log):
+                            curr_event_number += 1
                             self.log.log_info("Performed Event:" + str(target_event))
                         else:
                             self.log.log_failure("Failed to perform event:" + str(target_event))
@@ -124,7 +124,6 @@ class WidgetBasedTesting(TestStrategy):
                             start_app.trigger_event(self.target_device, self.log)
                         if curr_screen != old_screen:
                             self.selection_strategy.update_new_screen(curr_screen)
-                        curr_event_number += 1
             else:
                 self.log.log_failure("Failed to Start App:" + str(self.target_app_handler))
 
