@@ -2,6 +2,8 @@ __author__ = 'machiry'
 import os
 import subprocess
 import xml.dom.minidom
+import random
+import string
 
 
 def create_dirs(dir_path):
@@ -24,6 +26,13 @@ def read_file_lines(curr_file):
                 file_lines.append(curr_line)
         fp.close()
     return file_lines
+
+
+def get_random_text(length=0):
+    if length <= 0:
+        length = random.randint(1, 16)
+    to_ret = ''.join(random.choice(string.ascii_letters + string.digits) for i in range(length))
+    return to_ret
 
 
 def run_command(args, cmd_input=None):

@@ -22,9 +22,10 @@ class FrequencyBasedSelection(SelectionStrategy):
         return to_ret
 
     def update_new_screen(self, new_screen):
-        if 0 not in self.current_available_widget_frequency:
-            self.current_available_widget_frequency[0] = []
-        self.current_available_widget_frequency[0].extend(list(new_screen.child_widgets))
+        if len(new_screen.child_widgets) > 0:
+            if 0 not in self.current_available_widget_frequency:
+                self.current_available_widget_frequency[0] = []
+            self.current_available_widget_frequency[0].extend(list(new_screen.child_widgets))
 
     def update_system_events(self, target_events):
         if 0 not in self.current_available_widget_frequency:

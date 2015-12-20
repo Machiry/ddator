@@ -37,7 +37,7 @@ class TestProfile:
         assert self.target_device is not None, "First set the device"
         self.log.log_info("Starting to run test on Device:" + str(self.target_device))
         if self.test_strategy.setup(self.target_device, os.path.join(self.log_folder, "test_strategy_log"),
-                                    self.target_app_handler):
+                                    self.target_app_handler, self.number_of_events):
             self.log.log_info("Test Strategy:" + str(self.test_strategy) + " Setup Complete.")
             if self.test_strategy.run_tests():
                 self.log.log_info("Successfully Completed Running Tests.")

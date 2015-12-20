@@ -2,11 +2,13 @@ __author__ = 'machiry'
 from ..test_harness.test_strategy import TestStrategy
 from ..utils.common_utils import create_dirs
 from ..utils.logger import DDLogger
-from ..utils.ui_helper import get_current_screen
+from ..utils.ui_helper import get_current_screen, get_current_package
 from ..device_events.startapp_event import StartAppEvent
+from ..device_events.event_helper import get_all_possible_ui_events
 from frequency_based_selection import FrequencyBasedSelection
 from random_bias_selection import RandomBiasSelection
 from random_selection import RandomSelection
+import random
 import os
 
 
@@ -99,12 +101,30 @@ class WidgetBasedTesting(TestStrategy):
             if start_app.trigger_event(self.target_device, self.log):
                 to_ret = True
                 self.log.log_info("Started App:" + str(self.target_app_handler) + " successfully")
+
                 old_screen = get_current_screen(self.target_device)
                 self.selection_strategy.update_new_screen(old_screen)
                 curr_event_number = 0
                 while curr_event_number < self.number_of_events:
                     target_widget = self.selection_strategy.get_next_widget()
+                    if target_widget is None:
 
+                        self.log.log_warning("No widgets to click on the Application")
+                        break
+                    possible_events = get_all_possible_ui_events(target_widget)
+                    if len(possible_events) > 0:
+                        target_event = random.choice(possible_events)
+                        if target_event and target_event.trigger_event(self.target_device, self.log):
+                            self.log.log_info("Performed Event:" + str(target_event))
+                        else:
+                            self.log.log_failure("Failed to perform event:" + str(target_event))
+                        curr_screen = get_current_screen(self.target_device)
+                        current_pkg = get_current_package(self.target_device)
+                        if current_pkg != self.target_app_handler.get_app_name():
+                            start_app.trigger_event(self.target_device, self.log)
+                        if curr_screen != old_screen:
+                            self.selection_strategy.update_new_screen(curr_screen)
+                        curr_event_number += 1
             else:
                 self.log.log_failure("Failed to Start App:" + str(self.target_app_handler))
 

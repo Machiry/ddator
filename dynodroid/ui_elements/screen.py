@@ -7,7 +7,9 @@ class Screen(object):
         self.child_widgets.extend(child_widgets)
 
     def add_child(self, child_widget):
-        self.child_widgets = list(set(self.child_widgets).add(child_widget))
+        new_widgets = set(self.child_widgets)
+        new_widgets.add(child_widget)
+        self.child_widgets = list(new_widgets)
 
     def get_dump(self):
         return self.screen_dump
