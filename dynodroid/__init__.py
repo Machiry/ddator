@@ -1,6 +1,9 @@
 __author__ = 'machiry'
 import imp
 
+"""
+Check all the required python modules.
+"""
 try:
     imp.find_module("uiautomator")
 except ImportError:

@@ -3,8 +3,7 @@ __author__ = 'machiry'
 import sys
 from property_parser import parse_properties_file
 import property_parser
-from ..app_handlers.apk_handler import ApkHandler
-from ..app_handlers.app_src_handler import AppSrcHandler
+from ..app_handlers.app_handler_helper import get_app_handler
 from ..utils.logger import DDLogger
 from test_profile import TestProfile
 from ..test_harness.strategy_generator import get_test_strategies
@@ -26,17 +25,10 @@ def get_all_profiles(properties_dict, target_log):
         target_log.log_failure("Provided Application Directory does not exist:" +
                                str(properties_dict[property_parser.APP_DIR_PROPERTY_NAME]))
     else:
-        apps_with_src = []
-        apks = []
+        apps_path = []
         for curr_file in os.listdir(apps_dir):
             full_path = os.path.join(apps_dir, curr_file)
-            if os.path.isfile(full_path):
-                if full_path.endswith(".apk"):
-                    apks.append(full_path)
-                else:
-                    target_log.log_warning("Ignoring non-APK file:" + full_path)
-            else:
-                apps_with_src.append(full_path)
+            apps_path.append(full_path)
 
         target_num_events = set(filter(lambda x: x.strip(),
                                        properties_dict[property_parser.EVENT_COUNT_PROPERTY_NAME].split(',')))
@@ -47,31 +39,26 @@ def get_all_profiles(properties_dict, target_log):
         all_selection_strategies = set(filter(lambda x: x.strip(),
                                               properties_dict[property_parser.SEL_STRATEGY_PROPERTY_NAME].split(',')))
 
-        # First Create test profiles for all apks
-        for curr_apk in apks:
+        bad_apps_path = []
+        # Create test profiles for all apps
+        for curr_app_path in apps_path:
             for curr_event_num in target_num_events:
                 for curr_strategy in all_test_strategies:
                     all_strategy_objs = get_test_strategies(curr_strategy, all_selection_strategies)
                     for curr_strategy_obj in all_strategy_objs:
-                        curr_app_work_dir = os.path.join(base_work_dir, os.path.basename(curr_apk) + '_' +
+                        curr_app_work_dir = os.path.join(base_work_dir, os.path.basename(curr_app_path) + '_' +
                                                          str(curr_event_num) + '_' + str(curr_strategy_obj))
-                        curr_app_handler = ApkHandler(curr_apk, curr_app_work_dir)
-                        curr_app_test_profile = TestProfile(curr_app_handler, curr_strategy_obj, int(curr_event_num),
-                                                            {}, curr_app_work_dir)
-                        target_test_profiles.append(curr_app_test_profile)
+                        curr_app_handler = get_app_handler(curr_app_path, curr_app_work_dir)
+                        if curr_app_handler is None:
+                            if curr_app_path not in bad_apps_path:
+                                bad_apps_path.append(curr_app_path)
+                        else:
+                            curr_app_test_profile = TestProfile(curr_app_handler, curr_strategy_obj, int(curr_event_num),
+                                                                {}, curr_app_work_dir)
+                            target_test_profiles.append(curr_app_test_profile)
 
-        # Second, create test profiles for all apps with sources
-        for curr_app_src in apps_with_src:
-            for curr_event_num in target_num_events:
-                for curr_strategy in all_test_strategies:
-                    all_strategy_objs = get_test_strategies(curr_strategy, all_selection_strategies)
-                    for curr_strategy_obj in all_strategy_objs:
-                        curr_app_work_dir = os.path.join(base_work_dir, os.path.basename(curr_app_src) + '_' +
-                                                         str(curr_event_num) + '_' + str(curr_strategy_obj))
-                        curr_app_handler = AppSrcHandler(curr_app_src, curr_app_work_dir)
-                        curr_app_test_profile = TestProfile(curr_app_handler, curr_strategy_obj, int(curr_event_num),
-                                                            {}, curr_app_work_dir)
-                        target_test_profiles.append(curr_app_test_profile)
+        for bad_app_path in bad_apps_path:
+            target_log.log_failure("No App Handler found for:" + str(bad_app_path) + '. Ignoring.')
 
         return target_test_profiles
 

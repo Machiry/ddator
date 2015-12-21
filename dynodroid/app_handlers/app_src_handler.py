@@ -6,6 +6,10 @@ import os
 
 
 class AppSrcHandler(AppHandler):
+    """
+    App handler implementation for apps with sources.
+    This handles all the methods required to handle apps with sources.
+    """
 
     def __init__(self, app_full_path, target_log_dir):
         self.target_log_dir = target_log_dir

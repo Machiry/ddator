@@ -8,6 +8,9 @@ import os
 
 
 class ApkHandler(AppHandler):
+    """
+    App handler implementation for APKs. This handles all the methods required to handle APK.
+    """
 
     def __init__(self, apk_full_path, target_log_dir):
         self.target_log_dir = target_log_dir
@@ -16,9 +19,11 @@ class ApkHandler(AppHandler):
         assert os.path.exists(apk_full_path), "Provided APK:" + str(apk_full_path) + " does not exist."
         self.extracted_apk_dir = os.path.join(self.target_log_dir, "extracted_apk_dir")
         self.apk_full_path = apk_full_path
+        # decompress the APK
         assert decompress_apk(self.apk_full_path, self.extracted_apk_dir), "Failed to Decompress APK:" + \
                                                                            self.apk_full_path + ", Probably a Bad APK"
         self.manifest_fp = os.path.join(self.extracted_apk_dir, "AndroidManifest.xml")
+        # parse the manifest.
         self.manifest_info = parse_apk_manifest(self.manifest_fp)
         assert len(self.manifest_info) > 0, "Unable to parse manifest:" + str(self.manifest_fp)
         self.logger = DDLogger(self.__class__.__name__,
@@ -30,11 +35,7 @@ class ApkHandler(AppHandler):
         return True
 
     def install_app(self, device_handler):
-        """
-
-        :param device_handler:
-        :return:
-        """
+        # install the apk.
         return AppHandler.install_apk(self.apk_full_path, device_handler)
 
     def get_app_name(self):
