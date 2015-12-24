@@ -1,8 +1,17 @@
 from ..ui_elements.screen import Screen
 from ..ui_elements.widget import Widget
 
+"""
+Module that contains helper functions to deal with scrapping UI from the device.
+"""
+
 
 def get_current_screen(target_device):
+    """
+    Parse the device and get info about the screen currently on the device.
+    :param target_device: target device for which the screen object need to be fetched.
+    :return: target screen object.
+    """
     uiauto_object = target_device.get_ui_handle()
     curr_screen_dump = uiauto_object.dump()
     curr_package_name = get_current_package(target_device)
@@ -33,4 +42,9 @@ def get_current_screen(target_device):
 
 
 def get_current_package(target_device):
+    """
+
+    :param target_device:
+    :return:
+    """
     return target_device.get_ui_handle().info['currentPackageName']

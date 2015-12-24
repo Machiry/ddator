@@ -4,7 +4,7 @@ from uiautomator import Device
 
 class RealDeviceHandler(DeviceHandler):
     """
-
+    DeviceHandler for actual/real devices, unlike emulators.
     """
 
     def __init__(self, target_device_id):
@@ -15,10 +15,7 @@ class RealDeviceHandler(DeviceHandler):
                                                str(self.target_device_id)
 
     def reset_device(self):
-        """
-
-        :return:
-        """
+        # restart the device and create a new ui object.
         to_ret = self.restart_device()
         self.uiauto_object = Device(self.target_device_id)
         return to_ret and self.uiauto_object is not None

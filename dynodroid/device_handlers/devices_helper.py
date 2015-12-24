@@ -4,8 +4,8 @@ from ..utils.common_utils import run_command
 
 def get_adb_devices():
     """
-
-    :return:
+    This helper method returns all the devices detected by adb.
+    :return: List of device ids provided by adb.
     """
     to_ret = []
     get_device_args = ['adb', 'devices']

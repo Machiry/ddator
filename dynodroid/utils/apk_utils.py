@@ -3,13 +3,17 @@ import os
 from ..utils.common_utils import run_command
 from ..utils.logger import DDLogger
 
+"""
+Module containing all helper functions to deal with APK
+"""
+
 
 def decompress_apk(apk_fp, dst_folder):
     """
-
-    :param apk_fp:
-    :param dst_folder:
-    :return:
+    Decompress the provided APK
+    :param apk_fp: absolute path of the apk to decompress.
+    :param dst_folder: folder in which the apk need to be decompress.
+    :return: true/false => success/failure.
     """
     apk_tool_path = os.environ['APK_TOOL_PATH']
     apk_tool_args = ['java', '-jar', apk_tool_path, 'd', '-f', '-o', dst_folder, apk_fp]

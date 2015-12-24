@@ -2,6 +2,9 @@ from ui_event import UIEvent
 
 
 class TextEvent(UIEvent):
+    """
+    This class represents text event, used to insert text into a text widget.
+    """
 
     def __init__(self, target_widget, text_to_insert=""):
         self.target_widget = target_widget

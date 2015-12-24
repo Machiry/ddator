@@ -4,7 +4,7 @@ from ..utils.logger import DDLogger
 import os
 
 
-class TestProfile:
+class TestProfile(object):
     """
 
     """
@@ -30,10 +30,19 @@ class TestProfile:
         self.log = DDLogger(self.__class__.__name__, target_log_file=os.path.join(log_folder, "test_profile_log.log"))
 
     def set_device(self, target_device):
+        """
+
+        :param target_device:
+        :return:
+        """
         assert target_device is not None, "Device to test on cannot be None."
         self.target_device = target_device
 
     def run_profile(self):
+        """
+
+        :return:
+        """
         assert self.target_device is not None, "First set the device"
         self.log.log_info("Starting to run test on Device:" + str(self.target_device))
         if self.test_strategy.setup(self.target_device, os.path.join(self.log_folder, "test_strategy_log"),

@@ -1,7 +1,14 @@
 from ui_event import UIEvent
 
+"""
+This file contains all classes for scrolling or sliding.
+"""
+
 
 class Top2BottomSlideEvent(UIEvent):
+    """
+    Event to slide from top to bottom on the widget.
+    """
 
     def __init__(self, target_widget):
         self.target_widget = target_widget
@@ -23,7 +30,9 @@ class Top2BottomSlideEvent(UIEvent):
 
 
 class Bottom2TopSlideEvent(UIEvent):
-
+    """
+    Event to slide from bottom to top on the widget.
+    """
     def __init__(self, target_widget):
         self.target_widget = target_widget
 
@@ -44,6 +53,9 @@ class Bottom2TopSlideEvent(UIEvent):
 
 
 class Left2RightSlideEvent(UIEvent):
+    """
+    Event to slide from left to right on the widget.
+    """
 
     def __init__(self, target_widget):
         self.target_widget = target_widget
@@ -66,6 +78,9 @@ class Left2RightSlideEvent(UIEvent):
 
 
 class Right2LeftSlideEvent(UIEvent):
+    """
+    Event to slide from right to left on the widget.
+    """
 
     def __init__(self, target_widget):
         self.target_widget = target_widget

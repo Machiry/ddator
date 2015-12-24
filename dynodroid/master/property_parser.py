@@ -30,25 +30,25 @@ PROPERTIES_DICT = \
         REPORT_EMAIL_USER_PROPERTY_NAME: "Email id(gmail) which should be used as source to send email.",
         REPORT_EMAIL_PASS_PROPERTY_NAME: "Password of the report email id."}
 
-parsed_properties = dict()
+_parsed_properties = dict()
 
 
 def get_properties():
     """
-
-    :return:
+    Get all the properties (which were parsed before)
+    :return: dictionary containing all the properties.
     """
-    assert len(parsed_properties) > 0, "Properties not parsed. Parse the properties file, before calling this method."
-    return dict(parsed_properties)
+    assert len(_parsed_properties) > 0, "Properties not parsed. Parse the properties file, before calling this method."
+    return dict(_parsed_properties)
 
 
 def parse_properties_file(property_file):
     """
-
-    :param property_file:
-    :return:
+    Parse the provided properties file.
+    :param property_file: full path of the file that need to be parsed as properties file.
+    :return: dictionary containing properties.
     """
-    if len(parsed_properties) == 0:
+    if len(_parsed_properties) == 0:
         file_lines = read_file_lines(property_file)
         for curr_line in file_lines:
             # If the current line is not comment
@@ -57,10 +57,10 @@ def parse_properties_file(property_file):
                 if len(property_pair) == 2:
                     key_name = property_pair[0].strip()
                     value_name = property_pair[1].strip()
-                    parsed_properties[key_name] = value_name
+                    _parsed_properties[key_name] = value_name
         for curr_key in PROPERTIES_DICT:
-            if curr_key not in parsed_properties:
+            if curr_key not in _parsed_properties:
                 # TODO: consider default values for these keys.
                 DDLogger.write_failure_message("Property " + curr_key + "(" + PROPERTIES_DICT[curr_key] +
                                                ") not specified.")
-    return parsed_properties
+    return get_properties()

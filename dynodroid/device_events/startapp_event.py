@@ -4,7 +4,7 @@ from ..utils.ui_helper import get_current_package
 
 class StartAppEvent(SystemEvent):
     """
-
+    This is a system event to start an app.
     """
     def __init__(self, app_pkg_name, main_activity_name):
         self.app_pkg_name = app_pkg_name
