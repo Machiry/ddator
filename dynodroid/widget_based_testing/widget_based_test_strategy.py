@@ -13,6 +13,9 @@ import os
 
 
 class WidgetBasedTesting(TestStrategy):
+    """
+    This class represents widget based test strategy.
+    """
 
     STRATEGY_NAME = "WidgetBasedTesting"
 
@@ -28,9 +31,9 @@ class WidgetBasedTesting(TestStrategy):
     @staticmethod
     def create_test_strategies(selection_strategies_name):
         """
-
-        :param selection_strategies_name:
-        :return:
+        Given set of selection strategies, create TestStrategies with corresponding selection strategy.
+        :param selection_strategies_name: names of selection strategies.
+        :return: list of test strategy objects.
         """
 
         to_return_strategies = []
@@ -63,10 +66,10 @@ class WidgetBasedTesting(TestStrategy):
         create_dirs(log_folder)
         self.log = DDLogger(self.__class__.__name__, target_log_file=os.path.join(log_folder, self.get_name() + ".log"))
         self.log.log_info("Starting to Reset Device:" + str(self.target_device))
-        """if self.target_device.reset_device():
+        if self.target_device.reset_device():
             self.log.log_info("Resetting Device Successful:" + str(self.target_device))
         else:
-            self.log.log_failure("Failed to Reset Device:" + str(self.target_device))"""
+            self.log.log_failure("Failed to Reset Device:" + str(self.target_device))
         if self.target_app_handler.build_app():
             self.log.log_info("Successfully Built Application:" + str(self.target_app_handler))
         else:
@@ -83,7 +86,6 @@ class WidgetBasedTesting(TestStrategy):
         return self.setup_complete
 
     def get_name(self):
-        # TODO: Fix this
         return WidgetBasedTesting.STRATEGY_NAME + '_' + \
                (self.selection_strategy.get_name() if self.selection_strategy is not None else "")
 
@@ -98,21 +100,25 @@ class WidgetBasedTesting(TestStrategy):
             self.log.log_info("Starting to Run Tests.")
             start_app = StartAppEvent(self.target_app_handler.manifest_info['package_name'],
                                       self.target_app_handler.manifest_info['main_activity'])
+            # start the app
             if start_app.trigger_event(self.target_device, self.log):
                 to_ret = True
                 self.log.log_info("Started App:" + str(self.target_app_handler) + " successfully")
-
+                # get current screen.
                 old_screen = get_current_screen(self.target_device)
                 self.selection_strategy.update_new_screen(old_screen)
                 curr_event_number = 0
                 while curr_event_number < self.number_of_events:
+                    # get next widget
                     target_widget = self.selection_strategy.get_next_widget()
                     if target_widget is None:
                         self.log.log_warning("No widgets to click on the Application")
                         break
                     possible_events = get_all_possible_ui_events(target_widget)
                     if len(possible_events) > 0:
+                        # pick a random event to trigger on the widget
                         target_event = random.choice(possible_events)
+                        # trigger the event
                         if target_event and target_event.trigger_event(self.target_device, self.log):
                             curr_event_number += 1
                             self.log.log_info("Performed Event:" + str(target_event))
@@ -120,8 +126,10 @@ class WidgetBasedTesting(TestStrategy):
                             self.log.log_failure("Failed to perform event:" + str(target_event))
                         curr_screen = get_current_screen(self.target_device)
                         current_pkg = get_current_package(self.target_device)
+                        # if the app exited? Restart the app
                         if current_pkg != self.target_app_handler.get_app_name():
                             start_app.trigger_event(self.target_device, self.log)
+                        # if new screen is seen, update the selection strategy with corresponding info.
                         if curr_screen != old_screen:
                             self.selection_strategy.update_new_screen(curr_screen)
             else:
@@ -130,6 +138,8 @@ class WidgetBasedTesting(TestStrategy):
         return to_ret
 
     def cleanup(self):
+        # clean up
+        # uninstall the app
         to_ret = self.target_app_handler.uninstall_app(self.target_device)
         if to_ret:
             self.log.log_info("Uninstalled App:" + str(self.target_app_handler) + " Successfully.")

@@ -43,8 +43,8 @@ def get_current_screen(target_device):
 
 def get_current_package(target_device):
     """
-
-    :param target_device:
-    :return:
+    Get the package name (app name), which is currently displayed on the screen.
+    :param target_device: Device from which the info needs to be fetched.
+    :return: app name/package name.
     """
     return target_device.get_ui_handle().info['currentPackageName']

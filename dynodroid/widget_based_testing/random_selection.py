@@ -3,6 +3,10 @@ import random
 
 
 class RandomSelection(SelectionStrategy):
+    """
+    This is random selection strategy.
+    An event which is currently applicable will be randomly picked.
+    """
 
     def __init__(self):
         self.current_available_widgets = []
