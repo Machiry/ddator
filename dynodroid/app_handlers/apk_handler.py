@@ -41,5 +41,8 @@ class ApkHandler(AppHandler):
     def get_app_name(self):
         return self.manifest_info["package_name"]
 
+    def get_receivers_info(self):
+        return self.manifest_info["broadcast_receivers"]
+
     def get_name(self):
         return "APK_" + str(self.apk_full_path)

@@ -32,6 +32,20 @@ class AppHandler(object):
         """
         raise NotImplementedError("get app name Not implemented.")
 
+    def get_receivers_info(self):
+        """
+        Gets all the receivers listed in the app's AndroidManifest.xml
+        :return: Dictionary containing receiver name and list of corresponding intent filters
+        Example:
+        {"receiver1": [(action, category, priority),
+                       (action1, category1, priority1)
+                       ...
+                      ]
+        ...
+        }
+        """
+        raise NotImplementedError("get receivers info Not implemented.")
+
     @staticmethod
     def install_apk(apk_path, target_device_handler):
         """

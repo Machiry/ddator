@@ -14,8 +14,9 @@ class SystemEvent(GenericEvent):
 
     def get_adb_args(self):
         """
-
-        :return:
+        This method gives the list of arguments that
+        need to be provided to adb to trigger this.
+        :return: List of arguments that need to be provided to adb to trigger.
         """
         raise NotImplementedError("get adb args Not Implemented.")
 
